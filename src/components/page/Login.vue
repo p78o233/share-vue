@@ -47,6 +47,7 @@ export default {
                 if(res.ret == true){
                     localStorage.setItem('ms_username', res.data.userName);
                     localStorage.setItem("stockUserId",res.data.id);
+                    localStorage.setItem("stockToken",res.data.token)
                     this.$router.push('/');
                 }
             })

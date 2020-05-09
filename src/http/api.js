@@ -7,7 +7,7 @@ axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
     // Do something with response data
     console.log(response);
-    localStorage.setItem("authorization", response.headers.authorization)
+    // localStorage.setItem("authorization", response.headers.authorization)
     checkData(response)
     return response;
 }, function (error) {
@@ -26,7 +26,7 @@ const COMMON_URL = 'http://127.0.0.1:8201/shares';
 var flag = true;
 
 function checkData(data) {
-    if (data.data.code == 1) {
+    if (data.data.code == 200) {
         return data.data
     } else if (data.data.code == 2) {
         Vue.prototype.$Message.error(data.data.msg);
@@ -44,36 +44,23 @@ function checkData(data) {
  * @param params
  * @returns {Promise}
  */
-function myGet(url, params) {
-    return new Promise((resolve, reject) => {
+function myGet(url,params){
+    return new Promise((resolve,reject) => {
         url = BASE_URL + url;
-        axios.get(url, {
-            params: params,
-            headers: {
-                authorization: localStorage.getItem("authorization")
+        axios.get(url,{
+            params:params,
+            headers:{
+                token:localStorage.getItem('stockToken')
             }
         })
             .then(res => {
-                if(res.data.responseCode == '403'){
-                    if(flag) {
-                        flag = false
-                        Vue.prototype.$Message.error('登陆信息失效,请重新登陆！');
-                        setInterval(() => {
-                            flag = true
-                        }, 500)
-                    }
-                    router.push('/login');
-                }else {
-                    let data = checkData(res);
-                    if (data !== false) {
-                        resolve(data);
-                    }
+                let data = checkData(res);
+                if (data !== false) {
+                    resolve(data);
                 }
             })
             .catch(err => {
-                reject(err);
-
-
+                Vue.prototype.$Message.error('服务器开小差了！');
             })
     })
 }
@@ -84,41 +71,15 @@ function myGet(url, params) {
  * @param params
  * @returns {Promise}
  */
-function myPost(url, params) {
-    return new Promise((resolve, reject) => {
+function myPostBody(url,params){
+    return new Promise((resolve,reject) => {
         url = BASE_URL + url;
-        axios.post(url, params, {
+        axios.post(url, params,{
+            headers:{
+                'token':localStorage.getItem('stockToken'),
+                'content-type':'application/json'
+            }
         })
-            .then(res => {
-                    let data = checkData(res);
-                    if (data !== false) {
-                        resolve(data);
-                    }
-            })
-            .catch(err => {
-                if(flag) {
-                    flag = false
-                    Vue.prototype.$Message.error('登陆信息失效,请重新登陆！');
-                    setInterval(() => {
-                        flag = true
-                    }, 500)
-
-                }
-                router.push('/login');
-            })
-    })
-}
-
-/**
- * 封装表单提交post请求
- * @param url
- * @param params
- * @returns {Promise}
- */
-function myFormDataPost(url, formdata) {
-    return new Promise((resolve, reject) => {
-        url = BASE_URL + url;
-        axios.post(url,  Qs.stringify(formdata))
             .then(res => {
                 let data = checkData(res);
                 if (data !== false) {
@@ -126,8 +87,32 @@ function myFormDataPost(url, formdata) {
                 }
             })
             .catch(err => {
-                reject(err);
-                console.log(err);
+                Vue.prototype.$Message.error('服务器开小差了！');
+            })
+    })
+}
+/**
+ * 封装表单提交post请求
+ * @param url
+ * @param params
+ * @returns {Promise}
+ */
+function myPostForm(url,params){
+    return new Promise((resolve,reject) => {
+        url = BASE_URL + url;
+        axios.post(url, Qs.stringify(params),{
+            headers:{
+                token:localStorage.getItem('token')
+            }
+        })
+            .then(res => {
+                let data = checkData(res);
+                if (data !== false) {
+                    resolve(data);
+                }
+            })
+            .catch(err => {
+                Vue.prototype.$Message.error('服务器开小差了！');
             })
     })
 }
@@ -155,10 +140,35 @@ function myCommonPost(url, formdata) {
     })
 }
 
+// 登录用
+function myPostLogin(url, params) {
+    return new Promise((resolve, reject) => {
+        url = BASE_URL + url;
+        axios.post(url, params, {
+        })
+            .then(res => {
+                let data = checkData(res);
+                if (data !== false) {
+                    resolve(data);
+                }
+            })
+            .catch(err => {
+                if(flag) {
+                    flag = false
+                    Vue.prototype.$Message.error('登陆信息失效,请重新登陆！');
+                    setInterval(() => {
+                        flag = true
+                    }, 500)
+
+                }
+                router.push('/login');
+            })
+    })
+}
 // ===============================================================================================================
 // 登陆接口
 export const login = params =>{
-    return myPost('/stock/login',params)
+    return myPostLogin('/stock/login',params)
 }
 // 前端根据用户id获取全部观察数据
 export const getAllStock = params => {
@@ -166,7 +176,7 @@ export const getAllStock = params => {
 };
 // 保存stock数据
 export const ioeStock = params =>{
-    return myPost("/stock/ioeStock",params)
+    return myPostBody("/stock/ioeStock",params)
 }
 // 根据股票编号获取股票名称
 export const getStockNameByStockNum = params =>{
@@ -174,6 +184,6 @@ export const getStockNameByStockNum = params =>{
 }
 // 删除观察的数据
 export const deleteStock = params =>{
-    return myFormDataPost("/stock/deleteStock",params)
+    return myPostForm("/stock/deleteStock",params)
 }
 //ee3f38cf88acecc5021c8eeab703caa5
