@@ -11,6 +11,8 @@ import './components/common/directives';
 import 'babel-polyfill';
 import * as api from './http/api';
 import * as tool from './utils/tool';
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 Vue.prototype.api = api
 Vue.prototype.tool = tool
 Vue.config.productionTip = false;

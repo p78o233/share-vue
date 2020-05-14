@@ -186,4 +186,8 @@ export const getStockNameByStockNum = params =>{
 export const deleteStock = params =>{
     return myPostForm("/stock/deleteStock",params)
 }
+// 获取最近走势
+export const getStockRecordList= params =>{
+    return myGet("/stock/getStockRecordList",params)
+}
 //ee3f38cf88acecc5021c8eeab703caa5
