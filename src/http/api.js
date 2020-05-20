@@ -7,7 +7,7 @@ axios.defaults.withCredentials = true;
 axios.interceptors.response.use(function (response) {
     // Do something with response data
     console.log(response);
-    // localStorage.setItem("authorization", response.headers.authorization)
+    // sessionStorage.setItem("authorization", response.headers.authorization)
     checkData(response)
     return response;
 }, function (error) {
@@ -50,7 +50,7 @@ function myGet(url,params){
         axios.get(url,{
             params:params,
             headers:{
-                token:localStorage.getItem('stockToken')
+                token:sessionStorage.getItem('stockToken')
             }
         })
             .then(res => {
@@ -76,7 +76,7 @@ function myPostBody(url,params){
         url = BASE_URL + url;
         axios.post(url, params,{
             headers:{
-                'token':localStorage.getItem('stockToken'),
+                'token':sessionStorage.getItem('stockToken'),
                 'content-type':'application/json'
             }
         })
@@ -102,7 +102,7 @@ function myPostForm(url,params){
         url = BASE_URL + url;
         axios.post(url, Qs.stringify(params),{
             headers:{
-                token:localStorage.getItem('token')
+                token:sessionStorage.getItem('token')
             }
         })
             .then(res => {
@@ -190,4 +190,10 @@ export const deleteStock = params =>{
 export const getStockRecordList= params =>{
     return myGet("/stock/getStockRecordList",params)
 }
+
+// ==========================================================================
+// 分页获取买入卖出记录
+export const getBuySellRecordList = params => {
+    return myGet('/buysell/getBuySellRecordList', params)
+};
 //ee3f38cf88acecc5021c8eeab703caa5
