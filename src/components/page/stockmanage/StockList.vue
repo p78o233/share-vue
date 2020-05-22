@@ -133,7 +133,7 @@
                 searchParams: {//搜索参数
                     stockNum: '',//股票编号
                     stockName: '',//股票名
-                    userId: localStorage.getItem('stockUserId'),//当前用户id
+                    userId: sessionStorage.getItem('stockUserId'),//当前用户id
                     pageNum: 1,//当前页码
                     pageSize: 10//页面大小
                 },
@@ -148,7 +148,7 @@
                     stockName: '',//股票名称
                     category: 1,//1 股票 2基金 3黄金 4期货
                     weight: 0,//权重
-                    userId: localStorage.getItem('stockUserId')//用户id
+                    userId: sessionStorage.getItem('stockUserId')//用户id
                 },
                 rectChart: {//最近走势弹窗
                     title: '',
@@ -184,6 +184,10 @@
             };
         },
         methods: {
+            rectChartClose(){
+                // 查看最近走势弹窗关闭事件
+                this.rectChart.visible = false;
+            },
             lookRectChart(row) {
                 // 查看最近趋势
                 this.rectChart.size = 10;

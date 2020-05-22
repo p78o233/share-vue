@@ -196,4 +196,8 @@ export const getStockRecordList= params =>{
 export const getBuySellRecordList = params => {
     return myGet('/buysell/getBuySellRecordList', params)
 };
+// 新增修改买入记录
+export const ioeBuyRecord = params =>{
+    return myPostBody("/buysell/ioeBuyRecord",params)
+}
 //ee3f38cf88acecc5021c8eeab703caa5
