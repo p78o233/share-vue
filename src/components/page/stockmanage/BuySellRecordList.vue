@@ -37,6 +37,7 @@
                         <div style="text-align: center;font-size: 24px;">
                             出售记录
                         </div>
+                        <el-button size="small" type="primary" @click="addSellRecord(props.row.id)">新增卖出记录</el-button>
                         <el-table
                                 :data="props.row.sellRecordList"
                                 border
@@ -67,6 +68,12 @@
                                     width="180">
                                 <template slot-scope="scope">
                                     {{scope.row.sellTime | timeFilter}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" width="180" align="center">
+                                <template slot-scope="scope">
+                                    <el-button type="text" icon="el-icon-edit" @click="editSellRecrd(props.row.id,scope.row)">修改</el-button>
+                                    <el-button type="text" icon="el-icon-delete" class="red" @click="deleteSellRecord(scope.row.id)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -106,7 +113,7 @@
                     {{scope.row.buyTime | timeFilterNoTime}}
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="180" align="center">
+            <el-table-column label="操作" width="180" align="center" fixed="right">
                 <template slot-scope="scope">
                     <el-button type="text" icon="el-icon-edit" @click="editBuyRecrd(scope.row)">修改</el-button>
                     <el-button type="text" icon="el-icon-delete" class="red" @click="deleteBuyRecord(scope.row.id)">删除</el-button>
@@ -162,6 +169,36 @@
             </span>
         </el-dialog>
         <!--买入新增修改记录弹窗结束-->
+        <!--卖出记录新增修改弹窗开始-->
+        <el-dialog
+                :title=ioeSellTitle
+                :visible.sync="ioeSellVisible"
+                width="90%"
+                :before-close="ioeSellClose">
+            <el-form ref="ioeSellRecordData" :model="ioeSellRecordData" label-width="80px">
+                <el-form-item label="卖出价格">
+                    <el-input v-model="ioeSellRecordData.sellPrice"></el-input>
+                </el-form-item>
+                <el-form-item label="卖出股数">
+                    <el-input v-model="ioeSellRecordData.sellNum"></el-input>
+                </el-form-item>
+                <el-form-item label="卖出时间">
+                    <el-col :span="11">
+                        <el-date-picker
+                                v-model="ioeSellRecordData.sellTime"
+                                type="datetime"
+                                placeholder="选择日期时间">
+                        </el-date-picker>
+                    </el-col>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="ioeSellVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveSellRecordClick()">保 存</el-button>
+            </span>
+        </el-dialog>
+
+        <!--卖出记录新增修改弹窗j结束-->
     </div>
 </template>
 
@@ -192,11 +229,126 @@
                     buyNum:0,
                     userId:sessionStorage.getItem("stockUserId")
                 },
+                ioeSellTitle:"",//卖出记录新增修改标题
+                ioeSellRecordStatus:"",//新增修改卖出弹框状态
+                ioeSellVisible:false,//新增修改卖出弹窗是否显示
+                ioeSellRecordData:{//新增或修改卖出记录数据
+                    id:null,
+                    buyId:0,
+                    sellPrice:0.0,
+                    sellNum:0,
+                    sellTime:"",
+                    userId:sessionStorage.getItem("stockUserId")
+                },
             };
         },
         methods: {
-            deleteBuyRecord(){
+            deleteSellRecord(id){
+              // 删除出售记录
+                this.$confirm('此操作将删除该出售记录, 是否继续?', '删除出售记录提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.api.deleteSellRecord(id).then(res => {
+                        if (res.ret == true) {
+                            this.$message({
+                                message: res.message,
+                                type: 'success'
+                            });
+                            this.getBuySellRecordList();
+                        }
+                    });
+                }).catch(() => {
+                });
 
+            },
+            ioeSellClose(){
+                // 出售记录弹窗关闭事件
+                this.ioeSellVisible = false;
+            },
+            checkSaveSell(){
+                // 检查卖出的数据填写
+                if(this.ioeSellRecordData.sellPrice == 0.0 ||this.ioeSellRecordData.sellPrice == ""){
+                    this.$message({
+                        message: '警告，请填写出售价格',
+                        type: 'warning'
+                    });
+                    return false
+                }
+                if(this.ioeSellRecordData.sellPrice == 0.0 ||this.ioeSellRecordData.sellPrice == ""){
+                    this.$message({
+                        message: '警告，请填写出售价格',
+                        type: 'warning'
+                    });
+                    return false
+                }
+                if(this.ioeSellRecordData.sellTime == undefined ||this.ioeSellRecordData.sellTime == ""){
+                    this.$message({
+                        message: '警告，请填写出售时间',
+                        type: 'warning'
+                    });
+                    return false
+                }
+                return true;
+            },
+            saveSellRecordClick(){
+                // 新增或修改出售记录
+                // 检查填入的数据
+                if(this.checkSaveSell()) {
+                    this.api.ioeSellRecord(this.ioeSellRecordData).then(res => {
+                        this.$message({
+                            message: res.message,
+                            type: 'success'
+                        });
+                        this.ioeSellClose();
+                        this.getBuySellRecordList();
+                    });
+                }else{
+                    return;
+                }
+            },
+            addSellRecord(id){
+                // 新增卖出记录
+                debugger
+                this.ioeSellRecordData.id = null;
+                this.ioeSellRecordData.buyId = id;
+                this.ioeSellRecordData.sellPrice = 0.0;
+                this.ioeSellRecordData.sellNum = 0
+                this.ioeSellRecordData.sellTime = ""
+                this.ioeSellVisible = true;
+                this.ioeSellRecordStatus = "add"
+                this.ioeSellTitle = "新增卖出记录"
+            },
+            editSellRecrd(id,row){
+              // 修改卖出记录
+                this.ioeSellRecordData.id = row.id;
+                this.ioeSellRecordData.buyId = id;
+                this.ioeSellRecordData.sellPrice = row.sellPrice;
+                this.ioeSellRecordData.sellNum = row.sellNum
+                this.ioeSellRecordData.sellTime = row.sellTime
+                this.ioeSellVisible = true;
+                this.ioeSellRecordStatus = "edit"
+                this.ioeSellTitle = "修改卖出记录"
+            },
+            deleteBuyRecord(id){
+                // 删除购买记录
+                this.$confirm('此操作将删除该购买记录, 是否继续?', '删除购买记录提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.api.deleteBuyRecord(id).then(res => {
+                        if (res.ret == true) {
+                            this.$message({
+                                message: res.message,
+                                type: 'success'
+                            });
+                            this.getBuySellRecordList();
+                        }
+                    });
+                }).catch(() => {
+                });
             },
             editBuyRecrd(row){
                 // 买入记录修改按钮
@@ -216,15 +368,35 @@
             },
             checkSaveBuy(){
                 if(this.ioeBuyRecordStatus == "add"){
-                    if(this.ioeBuyRecordData.stockNum == "" || this.ioeBuyRecordData.stockNum == undefined)
+                    if(this.ioeBuyRecordData.stockNum == "" || this.ioeBuyRecordData.stockNum == undefined) {
+                        this.$message({
+                            message: '警告，请填写股票编号',
+                            type: 'warning'
+                        });
                         return false;
+                    }
                 }
-                if(this.ioeBuyRecordData.buyPrice == 0 || this.ioeBuyRecordData.buyPrice == "" || this.ioeBuyRecordData.buyPrice == undefined)
+                if(this.ioeBuyRecordData.buyPrice == 0 || this.ioeBuyRecordData.buyPrice == "" || this.ioeBuyRecordData.buyPrice == undefined) {
+                    this.$message({
+                        message: '警告，请填写购买价格',
+                        type: 'warning'
+                    });
+                    return false
+                }
+                if(this.ioeBuyRecordData.buyNum == 0 || this.ioeBuyRecordData.buyNum == "" || this.ioeBuyRecordData.buyNum == undefined) {
+                    this.$message({
+                        message: '警告，请填写购买数量',
+                        type: 'warning'
+                    });
                     return false;
-                if(this.ioeBuyRecordData.buyNum == 0 || this.ioeBuyRecordData.buyNum == "" || this.ioeBuyRecordData.buyNum == undefined)
+                }
+                if(this.ioeBuyRecordData.buyTime == "" || this.ioeBuyRecordData.buyTime == undefined) {
+                    this.$message({
+                        message: '警告，请填写购买日期',
+                        type: 'warning'
+                    });
                     return false;
-                if(this.ioeBuyRecordData.buyTime == "" || this.ioeBuyRecordData.buyTime == undefined)
-                    return false;
+                }
                 return true;
             },
             saveBuyRecordClick(){

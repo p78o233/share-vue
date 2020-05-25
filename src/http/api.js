@@ -200,4 +200,16 @@ export const getBuySellRecordList = params => {
 export const ioeBuyRecord = params =>{
     return myPostBody("/buysell/ioeBuyRecord",params)
 }
+// 删除购买记录
+export const deleteBuyRecord = (id) =>{
+    return myPostBody("/buysell/deleteBuyRecord/"+id)
+}
+// 新增修改出售记录
+export const ioeSellRecord = params =>{
+    return myPostBody("/buysell/ioeSellRecord",params)
+}
+// 删除出售记录
+export const deleteSellRecord = (id) =>{
+    return myPostBody("/buysell/deleteSellRecord/"+id)
+}
 //ee3f38cf88acecc5021c8eeab703caa5
