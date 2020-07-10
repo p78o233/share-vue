@@ -212,4 +212,25 @@ export const ioeSellRecord = params =>{
 export const deleteSellRecord = (id) =>{
     return myPostBody("/buysell/deleteSellRecord/"+id)
 }
+//===================================================================================
+// 获取用户基础配置
+export const getUserBaseSetting = params => {
+    return myGet('/setting/getUserBaseSetting', params)
+}
+// 修改用户基本配置
+export const editUserBaseSetting = params =>{
+    return myPostBody("/setting/editUserBaseSetting",params)
+}
+// 分页获取买入卖出提示数据
+export const getBuySellNotice = params => {
+    return myGet('/setting/getBuySellNotice', params)
+}
+// 新增修改买入卖出提示数据
+export const ioeBuySellNotice = params =>{
+    return myPostBody("/setting/ioeBuySellNotice",params)
+}
+// 删除新增修改记录
+export const deleteBuySellNotice = (id) =>{
+    return myPostBody("/setting/deleteBuySellNotice/"+id)
+}
 //ee3f38cf88acecc5021c8eeab703caa5

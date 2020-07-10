@@ -112,6 +112,16 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/stockmanage/BuySellRecordList.vue'),
                     meta: { title: '记录列表' }
                 },
+                {
+                    path: '/setting',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/setting/userSetting.vue'),
+                    meta: { title: '基础信息设置' }
+                },
+                {
+                    path: '/notice',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/setting/buySellNotice.vue'),
+                    meta: { title: '买入卖出提示' }
+                },
             ]
         },
         {

@@ -165,6 +165,21 @@ export default {
                         }
                     ]
                 },
+                {
+                    icon: 'el-icon-rank',
+                    index: '10',
+                    title: '配置信息',
+                    subs: [
+                        {
+                            index: 'setting',
+                            title: '基础配置'
+                        },
+                        {
+                            index: 'notice',
+                            title: '买入卖出提示'
+                        }
+                    ]
+                },
             ]
         };
     },

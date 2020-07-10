@@ -20,6 +20,7 @@
             </el-form>
             <el-button size="small" @click="getBuySellRecordList()">搜索</el-button>
             <el-button size="small" type="primary" @click="addBuyRecord()">新增购买记录</el-button>
+            <el-button size="small" type="info" plain @click="cleanBuySellRecord()">清空</el-button>
         </el-card>
         <!--筛选操作结束-->
         <!--数据展示列表开始-->
@@ -33,7 +34,7 @@
             <!--出售记录开始-->
             <el-table-column type="expand">
                 <template slot-scope="props">
-                    <el-card class="box-card" style="border: 1px solid black;">
+                    <el-card class="box-card">
                         <div style="text-align: center;font-size: 24px;">
                             出售记录
                         </div>
@@ -421,6 +422,12 @@
                 }else{
                     return;
                 }
+            },
+            cleanBuySellRecord(){
+                // 清空按钮
+                this.searchBuySellData.stockNum = "";
+                this.searchBuySellData.beginTime = "";
+                this.searchBuySellData.endTime = "";
             },
             addBuyRecord(){
                 // 添加购买记录
