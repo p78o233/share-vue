@@ -311,7 +311,6 @@
             },
             addSellRecord(id){
                 // 新增卖出记录
-                debugger
                 this.ioeSellRecordData.id = null;
                 this.ioeSellRecordData.buyId = id;
                 this.ioeSellRecordData.sellPrice = 0.0;
