@@ -180,6 +180,17 @@ export default {
                         }
                     ]
                 },
+                {
+                    icon: 'el-icon-rank',
+                    index: '11',
+                    title: '当前信息',
+                    subs: [
+                        {
+                            index: 'getnowrecord',
+                            title: '获取当前信息'
+                        },
+                    ]
+                },
             ]
         };
     },

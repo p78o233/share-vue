@@ -233,4 +233,9 @@ export const ioeBuySellNotice = params =>{
 export const deleteBuySellNotice = (id) =>{
     return myPostBody("/setting/deleteBuySellNotice/"+id)
 }
+//=======================================================================================
+//获取当前数据
+export const checkNowPrice = (userId,weight,params) => {
+    return myPostBody('/getNow/checkNowPrice/'+userId+"/"+weight,params)
+}
 //ee3f38cf88acecc5021c8eeab703caa5

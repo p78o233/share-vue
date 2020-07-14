@@ -122,6 +122,11 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/setting/buySellNotice.vue'),
                     meta: { title: '买入卖出提示' }
                 },
+                {
+                    path: '/getnowrecord',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/nowrecord/getRecordNow.vue'),
+                    meta: { title: '获取当前信息' }
+                },
             ]
         },
         {
