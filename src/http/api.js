@@ -190,7 +190,10 @@ export const deleteStock = params =>{
 export const getStockRecordList= params =>{
     return myGet("/stock/getStockRecordList",params)
 }
-
+// 获取分时涨跌幅度
+export const getRatio= params =>{
+    return myGet("/stock/getRatio",params)
+}
 // ==========================================================================
 // 分页获取买入卖出记录
 export const getBuySellRecordList = params => {

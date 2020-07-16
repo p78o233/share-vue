@@ -55,6 +55,7 @@
                 <template slot-scope="scope">
                     <el-button type="text" icon="el-icon-edit" @click="editStock(scope.row)">修改</el-button>
                     <el-button type="text" icon="el-icon-view" @click="lookRectChart(scope.row)">查看最近走势</el-button>
+                    <el-button type="text" icon="el-icon-view" @click="lookRatioChart(scope.row.id)">查看幅度</el-button>
                     <el-button type="text" icon="el-icon-delete" class="red" @click="deleteStock(scope.row)">删除
                     </el-button>
                 </template>
@@ -122,6 +123,16 @@
             <div id="myChart" :style="{width: '100%', height: '800px'}"></div>
         </el-dialog>
         <!--查看最近走势结束-->
+
+        <!--查看涨跌幅度开始-->
+        <el-dialog
+                title=""
+                :visible.sync="stockRatio.ratioVisible"
+                width="90%"
+                :before-close="ratioClose">
+            <div id="myRatio" :style="{width: '100%', height: '800px'}"></div>
+        </el-dialog>
+        <!--查看涨跌幅度结束-->
     </div>
 </template>
 
@@ -180,10 +191,77 @@
                             label:'全部'
                         },
                     ],
-                }
+                },
+                stockRatio:{//股票涨跌幅度弹窗
+                    ratioVisible:false,
+                    stockId:"",
+                    cate:1,
+                },
             };
         },
         methods: {
+            lookRatioChart(stockId){
+                // 查看涨跌幅点击事件
+                this.stockRatio.stockId = stockId
+                this.stockRatio.ratioVisible = true;
+                let sendData = {
+                    "stockId":this.stockRatio.stockId,
+                    "cate":this.stockRatio.cate
+                }
+                this.api.getRatio(sendData).then(res => {
+                    let myRatio = this.$echarts.init(document.getElementById('myRatio'));
+                    // 横坐标
+                    var xAxisData = [];
+                    // 数值
+                    var data1 = [];
+                    for (var i = 0; i < res.data.length; i++) {
+                        xAxisData.push(res.data[i].time);
+                        data1.push(res.data[i].ratio);
+                    }
+                    myRatio.setOption ({
+                        title: {
+                            text: '柱状图动画延迟'
+                        },
+                        legend: {
+                            data: ['']
+                        },
+                        toolbox: {
+                            // y: 'bottom',
+                            feature: {
+                                magicType: {
+                                    type: ['stack', 'tiled']
+                                },
+                                dataView: {},
+                                saveAsImage: {
+                                    pixelRatio: 2
+                                }
+                            }
+                        },
+                        tooltip: {},
+                        xAxis: {
+                            data: xAxisData,
+                            splitLine: {
+                                show: false
+                            }
+                        },
+                        yAxis: {
+                        },
+                        series: [{
+                            name: 'bar',
+                            type: 'bar',
+                            data: data1,
+                            animationDelay: function (idx) {
+                                return idx * 10;
+                            }
+                        }
+                        ],
+                        animationEasing: 'elasticOut',
+                        animationDelayUpdate: function (idx) {
+                            return idx * 5;
+                        }
+                    });
+                });
+            },
             rectChartClose(){
                 // 查看最近走势弹窗关闭事件
                 this.rectChart.visible = false;
