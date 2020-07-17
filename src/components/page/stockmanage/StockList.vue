@@ -130,6 +130,10 @@
                 :visible.sync="stockRatio.ratioVisible"
                 width="90%"
                 :before-close="ratioClose">
+            <el-tabs v-model="activeName" @tab-click="tabClickChange">
+                <el-tab-pane label="涨" name="1"></el-tab-pane>
+                <el-tab-pane label="跌" name="2"></el-tab-pane>
+            </el-tabs>
             <div id="myRatio" :style="{width: '100%', height: '800px'}"></div>
         </el-dialog>
         <!--查看涨跌幅度结束-->
@@ -197,13 +201,21 @@
                     stockId:"",
                     cate:1,
                 },
+                activeName:"1",//tab选中项目
             };
         },
         methods: {
-            lookRatioChart(stockId){
-                // 查看涨跌幅点击事件
-                this.stockRatio.stockId = stockId
-                this.stockRatio.ratioVisible = true;
+            tabClickChange(tab){
+                // tab选中事件
+                this.stockRatio.cate = tab.name
+                this.apiRatioChart(this.stockRatio.stockId);
+            },
+            ratioClose(){
+                // 涨跌幅度弹窗关闭事件
+                this.stockRatio.ratioVisible = false;
+            },
+            apiRatioChart(stockId){
+                // 网络请求获取涨跌幅数据
                 let sendData = {
                     "stockId":this.stockRatio.stockId,
                     "cate":this.stockRatio.cate
@@ -261,6 +273,15 @@
                         }
                     });
                 });
+            },
+            lookRatioChart(stockId){
+                // 查看涨跌幅点击事件
+                this.stockRatio.stockId = stockId
+                this.activeName = "1"
+                this.stockRatio.cate = 1
+                this.apiRatioChart(stockId)
+                this.stockRatio.ratioVisible = true;
+
             },
             rectChartClose(){
                 // 查看最近走势弹窗关闭事件
