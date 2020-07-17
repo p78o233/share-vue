@@ -132,7 +132,8 @@
                 :before-close="ratioClose">
             <el-tabs v-model="activeName" @tab-click="tabClickChange">
                 <el-tab-pane label="涨" name="1"></el-tab-pane>
-                <el-tab-pane label="跌" name="2"></el-tab-pane>
+                <!--<el-tab-pane label="平" name="0"></el-tab-pane>-->
+                <el-tab-pane label="跌" name="-1"></el-tab-pane>
             </el-tabs>
             <div id="myRatio" :style="{width: '100%', height: '800px'}"></div>
         </el-dialog>
