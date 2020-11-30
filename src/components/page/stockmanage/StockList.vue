@@ -135,7 +135,7 @@
                 <!--<el-tab-pane label="平" name="0"></el-tab-pane>-->
                 <el-tab-pane label="跌" name="-1"></el-tab-pane>
             </el-tabs>
-            <div id="myRatio" :style="{width: '100%', height: '800px'}"></div>
+            <div id="myRatio" style="height: 800px;"></div>
         </el-dialog>
         <!--查看涨跌幅度结束-->
     </div>

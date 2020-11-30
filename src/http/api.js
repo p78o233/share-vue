@@ -17,9 +17,9 @@ axios.interceptors.response.use(function (response) {
 // const BASE_URL = 'http://192.168.50.229/mingya-backend/public/api/admin';
 // const COMMON_URL = 'http://192.168.50.229/mingya-backend/public';
 // 测试机
-const BASE_URL = 'http://127.0.0.1:8201/shares';
+const BASE_URL = 'http://127.0.0.1:8202/shares';
 // const BASE_URL = 'http://10.1.161.102:20884';
-const COMMON_URL = 'http://127.0.0.1:8201/shares';
+const COMMON_URL = 'http://127.0.0.1:8202/shares';
 // 生产
 // const BASE_URL = 'http://192.168.48.194:9090';
 // const COMMON_URL = 'http://192.168.48.194:9090';
